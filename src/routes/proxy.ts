@@ -11,6 +11,18 @@ export async function proxyRoutes(app: FastifyInstance) {
             upstream: rsoAPIURL,
             prefix: '/v1/val',
             rewritePrefix: '/v1/riot',
+            replyOptions: {
+                onResponse: (request, reply, res) => {
+                    reply.removeHeader('Server')
+                        .removeHeader('Cf-Cache-Status')
+                        .removeHeader('Cf-Ray')
+                        .removeHeader('Report-To')
+                        .removeHeader('Nel')
+                        .header('X-Proxied-By', 'Trafalgar')
+                        .header('X-Resolver', 'cloudflare')
+                    reply.send(res)
+                }
+            },
             preValidation: async (request, reply) => {
                 if (request.headers['x-api-key']) {
                     const check = await findKey(request.headers['x-api-key'] as string)
@@ -27,6 +39,18 @@ export async function proxyRoutes(app: FastifyInstance) {
             upstream: 'https://vlr.rtrampox.cloud',
             prefix: '/v1/vlr',
             rewritePrefix: '/v2',
+            replyOptions: {
+                onResponse: (request, reply, res) => {
+                    reply.removeHeader('Server')
+                        .removeHeader('Cf-Cache-Status')
+                        .removeHeader('Cf-Ray')
+                        .removeHeader('Report-To')
+                        .removeHeader('Nel')
+                        .header('X-Proxied-By', 'Trafalgar')
+                        .header('X-Resolver', 'cloudflare')
+                        .send(res)
+                }
+            },
             preValidation: async (request, reply) => {
                 if (request.headers['x-api-key']) {
                     const check = await findKey(request.headers['x-api-key'] as string)

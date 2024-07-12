@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@fastify/caching": "^8.4.0",
     "@fastify/http-proxy": "^9.5.0",
     "@prisma/client": "^5.16.2",
     "fastify": "^4.28.1",

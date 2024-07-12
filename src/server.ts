@@ -1,9 +1,14 @@
 import Fastify from 'fastify';
+import fastifyCaching from '@fastify/caching';
 import { routes } from './routes/routes';
 import { proxyRoutes } from './routes/proxy';
 
 const app = Fastify()
 const port = process.env.PORT
+app.register(fastifyCaching, {
+    serverExpiresIn: 30,
+    expiresIn: 30,
+})
 app.register(routes)
 app.register(proxyRoutes)
 
