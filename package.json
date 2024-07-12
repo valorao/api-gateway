@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "tsx ./src/server.ts",
+    "dev": "tsx watch ./src/server.ts"
+  },
   "dependencies": {
     "@fastify/caching": "^8.4.0",
     "@fastify/http-proxy": "^9.5.0",
