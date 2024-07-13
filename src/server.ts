@@ -13,5 +13,5 @@ app.register(routes)
 app.register(proxyRoutes)
 
 app.listen({ port: parseInt(port as string) || 3000 }, () => {
-    console.log('Server running')
+    console.log(`API Gateway is ready to receive requests at port: ${port || 3000}`)
 })
