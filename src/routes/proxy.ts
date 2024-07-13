@@ -14,39 +14,7 @@ export async function proxyRoutes(app: FastifyInstance) {
             rewritePrefix: '/v1/riot',
             replyOptions: {
                 onResponse: (request, reply, res) => {
-                    reply.removeHeader('Server')
-                        .removeHeader('Cf-Cache-Status')
-                        .removeHeader('Cf-Ray')
-                        .removeHeader('Report-To')
-                        .removeHeader('Nel')
-                        .header('X-Proxied-By', 'Trafalgar')
-                        .header('X-Resolver', 'cloudflare')
-                    reply.send(res)
-                }
-            },
-            preValidation: async (request, reply) => {
-                if (request.headers['x-api-key']) {
-                    const check = await findKey(request.headers['x-api-key'] as string)
-                    if (!check) return reply.code(403).send({ status: 403, message: 'This API Key is not valid' })
-                } else {
-                    return reply.code(400).send({ status: 400, message: 'Missing API Key' })
-                }
-            },
-            http2: true,
-        })
-    }
-    if (vlrggAPIURL) {
-        app.register((fastifyHttpProxy), {
-            upstream: vlrggAPIURL,
-            prefix: '/v1/vlr',
-            rewritePrefix: '/v2',
-            replyOptions: {
-                onResponse: (request, reply, res) => {
-                    reply.removeHeader('Server')
-                        .removeHeader('Cf-Cache-Status')
-                        .removeHeader('Cf-Ray')
-                        .removeHeader('Report-To')
-                        .removeHeader('Nel')
+                    reply
                         .header('X-Proxied-By', 'Trafalgar')
                         .header('X-Resolver', 'cloudflare')
                         .send(res)
@@ -60,7 +28,29 @@ export async function proxyRoutes(app: FastifyInstance) {
                     return reply.code(400).send({ status: 400, message: 'Missing API Key' })
                 }
             },
-            http2: true,
+        })
+    }
+    if (vlrggAPIURL) {
+        app.register((fastifyHttpProxy), {
+            upstream: vlrggAPIURL,
+            prefix: '/v1/vlr',
+            rewritePrefix: '/v2',
+            replyOptions: {
+                onResponse: (request, reply, res) => {
+                    reply
+                        .header('X-Proxied-By', 'Trafalgar')
+                        .header('X-Resolver', 'cloudflare')
+                        .send(res)
+                }
+            },
+            preValidation: async (request, reply) => {
+                if (request.headers['x-api-key']) {
+                    const check = await findKey(request.headers['x-api-key'] as string)
+                    if (!check) return reply.code(403).send({ status: 403, message: 'This API Key is not valid' })
+                } else {
+                    return reply.code(400).send({ status: 400, message: 'Missing API Key' })
+                }
+            },
         })
     }
     if (mailAPIURL) {
@@ -69,11 +59,7 @@ export async function proxyRoutes(app: FastifyInstance) {
             prefix: '/cloud-mail',
             replyOptions: {
                 onResponse: (request, reply, res) => {
-                    reply.removeHeader('Server')
-                        .removeHeader('Cf-Cache-Status')
-                        .removeHeader('Cf-Ray')
-                        .removeHeader('Report-To')
-                        .removeHeader('Nel')
+                    reply
                         .header('X-Proxied-By', 'Trafalgar')
                         .header('X-Resolver', 'cloudflare')
                         .send(res)
