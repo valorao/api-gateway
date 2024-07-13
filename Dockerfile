@@ -12,4 +12,4 @@ RUN npm i
 RUN npm install -g nodemon
 RUN npx prisma generate
 
-CMD ["nodemon", "src/server.ts"]
+CMD ["npm", "start"]

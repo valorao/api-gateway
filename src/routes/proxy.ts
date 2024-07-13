@@ -5,6 +5,7 @@ import { findKey } from '../lib/prisma';
 export async function proxyRoutes(app: FastifyInstance) {
     const rsoAPIURL = process.env.RSO_API_UPSTREAM
     const vlrggAPIURL = process.env.VLRGG_API_UPSTREAM
+    const mailAPIURL = process.env.MAIL_API_UPSTREAM
 
     if (rsoAPIURL) {
         app.register((fastifyHttpProxy), {
@@ -36,7 +37,7 @@ export async function proxyRoutes(app: FastifyInstance) {
     }
     if (vlrggAPIURL) {
         app.register((fastifyHttpProxy), {
-            upstream: 'https://vlr.rtrampox.cloud',
+            upstream: vlrggAPIURL,
             prefix: '/v1/vlr',
             rewritePrefix: '/v2',
             replyOptions: {
@@ -60,6 +61,24 @@ export async function proxyRoutes(app: FastifyInstance) {
                 }
             },
             http2: true,
+        })
+    }
+    if (mailAPIURL) {
+        app.register((fastifyHttpProxy), {
+            upstream: mailAPIURL,
+            prefix: '/cloud-mail',
+            replyOptions: {
+                onResponse: (request, reply, res) => {
+                    reply.removeHeader('Server')
+                        .removeHeader('Cf-Cache-Status')
+                        .removeHeader('Cf-Ray')
+                        .removeHeader('Report-To')
+                        .removeHeader('Nel')
+                        .header('X-Proxied-By', 'Trafalgar')
+                        .header('X-Resolver', 'cloudflare')
+                        .send(res)
+                }
+            },
         })
     }
 }
