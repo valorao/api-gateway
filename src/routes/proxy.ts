@@ -34,7 +34,7 @@ export async function proxyRoutes(app: FastifyInstance) {
         app.register((fastifyHttpProxy), {
             upstream: vlrggAPIURL,
             prefix: '/v1/vlr',
-            rewritePrefix: '/v2',
+            rewritePrefix: '/v1/vlr',
             replyOptions: {
                 onResponse: (request, reply, res) => {
                     reply

@@ -19,6 +19,7 @@ model ApiKey {
   ownerEmail String
   ownerName  String
   keyName    String
+  keyLimit   Int    @default(30)
 
   @@index([apiKey])
 }
